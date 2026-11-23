@@ -1,0 +1,33 @@
+{% extends 'base.html' %}{% load static %}
+{% block title %}Видеоисточники — CineScope{% endblock %}
+{% block page_styles %}<link rel="stylesheet" href="{% static 'video.css' %}">{% endblock %}
+{% block content %}
+<section class="wrap page-section">
+  <a class="breadcrumb" href="{% url 'manage' %}">Управление</a>
+  <div class="page-heading"><h1>Видеоисточники</h1><p>Привяжите полный фильм к его карточке или укажите официальный сервис.</p></div>
+  {% if saved %}<p class="notice" role="status">Источник сохранён. Изменение появится на сайте в течение 30 секунд.</p>{% endif %}
+  <div class="source-admin-layout">
+    <form method="post" class="source-admin-form">
+      {% csrf_token %}
+      {{ form.as_div }}
+      <datalist id="catalog-titles">{% for movie in movies %}{% if movie.media_type != 'tv' %}<option value="{{ movie.id }}">{{ movie.title }}</option>{% endif %}{% endfor %}</datalist>
+      <button class="button primary" type="submit">Сохранить источник</button>
+    </form>
+    <aside class="source-admin-notes">
+      <h2>Как добавить фильм</h2>
+      <ol>
+        <li>Выберите карточку по идентификатору, например <code>dune-part-two</code>.</li>
+        <li>Укажите официальный сайт или страницу правообладателя.</li>
+        <li>Для показа в CineScope добавьте публичную ссылку MP4 или WebM. Если оставить её пустой, карточка будет вести на официальный сервис.</li>
+      </ol>
+      <p>Поддерживаемые хосты: Wikimedia, Blender{% for host in media_hosts %}, {{ host }}{% endfor %}. Новые видеохосты можно добавить через настройку проекта.</p>
+      <p>Открытые фильмы Blender входят в редакционную подборку. Здесь можно добавить отдельный источник для любого фильма в каталоге.</p>
+    </aside>
+  </div>
+  <section class="source-list"><h2>Сохранённые источники</h2>
+    {% for row in sources %}
+      <a href="?movie={{ row.movie_id|urlencode }}"><strong>{{ row.movie_title }}</strong><span>{% if row.published %}Опубликовано{% else %}Черновик{% endif %} · {{ row.source_name }}</span></a>
+    {% empty %}<p class="muted">Добавленные источники появятся здесь.</p>{% endfor %}
+  </section>
+</section>
+{% endblock %}

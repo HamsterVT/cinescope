@@ -1,0 +1,23 @@
+<div class="cs-pricing">
+  <article class="cs-price-card">
+    <div class="cs-price-top"><span>УЖЕ ДОСТУПНО</span><span class="cs-price-badge">Бесплатно</span></div>
+    <h3>Ваш профиль</h3><p class="cs-price-value">0 ₸ <span>навсегда</span></p>
+    <p class="cs-price-description">Всё, чтобы выбрать фильм и сохранить впечатления.</p>
+    <ul class="cs-price-features"><li>Каталог и трейлеры</li><li>Личные списки и оценки</li><li>Сохранение между устройствами</li></ul>
+    <a class="cs-price-action" href="{% if cloud_user %}/profile/{% else %}/account/signup/{% endif %}">{% if cloud_user %}Мой профиль{% else %}Создать профиль{% endif %} </a>
+  </article>
+  <article class="cs-price-card cs-price-featured">
+    <div class="cs-price-top"><span>ЕЖЕМЕСЯЧНО</span><span class="cs-price-badge">Поддержка проекта</span></div>
+    <h3>CineScope Plus</h3><p class="cs-price-value">1 990 ₸ <span>/ месяц</span></p>
+    <p class="cs-price-description">Для тех, кто хочет быть ближе к любимому кино.</p>
+    <div class="cs-price-information"><strong>Значок Plus на месяц</strong><p>Значок Plus в профиле и ваш вклад в развитие CineScope.</p></div>
+    <a class="cs-price-action" href="/billing/checkout/?plan=monthly">Купить Plus за 1 990 ₸ </a>
+  </article>
+  <article class="cs-price-card">
+    <div class="cs-price-top"><span>НА ЦЕЛЫЙ ГОД</span><span class="cs-price-badge">Поддержка проекта</span></div>
+    <h3>Год с Plus</h3><p class="cs-price-value">15 990 ₸ <span>/ год</span></p>
+    <p class="cs-price-description">Около 1 333 ₸ в месяц при годовой подписке.</p>
+    <div class="cs-price-information"><strong>Выгоднее на 33%</strong><p>По сравнению с 12 месяцами по тарифу 1 990 ₸.</p></div>
+    <a class="cs-price-action" href="/billing/checkout/?plan=annual">Купить Plus за 15 990 ₸ </a>
+  </article>
+</div>

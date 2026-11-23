@@ -1,0 +1,22 @@
+from django.db import models
+class Movie(models.Model):
+    media_type = models.CharField(max_length=5, default="movie", choices=[("movie","Фильм"),("tv","Сериал")], db_index=True)
+    slug = models.SlugField(unique=True)
+    title = models.CharField(max_length=240, db_index=True)
+    original_title = models.CharField(max_length=240, blank=True)
+    year = models.PositiveSmallIntegerField(db_index=True)
+    rating = models.DecimalField(max_digits=3, decimal_places=1)
+    genres = models.JSONField(default=list)
+    overview = models.TextField()
+    poster = models.URLField(blank=True)
+    backdrop = models.URLField(blank=True)
+    runtime = models.PositiveSmallIntegerField(default=0)
+    director = models.CharField(max_length=240, blank=True)
+    country = models.CharField(max_length=240, blank=True)
+    cast = models.JSONField(default=list)
+    tmdb_id = models.PositiveIntegerField(null=True, blank=True)
+    trailer_id = models.CharField(max_length=11, blank=True)
+    trailer_title = models.CharField(max_length=300, blank=True)
+    trailer_channel = models.CharField(max_length=200, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    def __str__(self): return self.title

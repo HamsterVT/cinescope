@@ -1,0 +1,34 @@
+<section class="movie-intro" aria-labelledby="movie-title">
+  {% if movie.backdrop %}<img class="movie-intro-backdrop" src="{{ movie.backdrop }}" alt="" width="1280" height="720" fetchpriority="high">{% endif %}
+  <div class="movie-intro-shade"></div>
+  <div class="wrap">
+    <a class="breadcrumb" href="{% url 'catalog' %}">Каталог</a>
+    <div class="movie-intro-grid">
+      <div class="movie-intro-copy">
+        {% if movie.director %}<p class="movie-intro-director">{{ movie.director }}</p>{% endif %}
+        <h1 id="movie-title">{{ movie.title }}</h1>
+        {% if movie.original_title and movie.original_title != movie.title %}<p class="movie-intro-original">{{ movie.original_title }}</p>{% endif %}
+        <div class="movie-intro-meta">{% if movie.rating %}<span>★ {{ movie.rating|floatformat:1 }}</span>{% endif %}<span>{{ movie.year }}</span>{% if movie.media_type == 'tv' %}<span>Сериал</span>{% endif %}{% if movie.runtime %}<span>{{ movie.runtime }} мин</span>{% endif %}</div>
+        <div class="movie-intro-genres">{% for genre in movie.genres %}<a href="{% url 'catalog' %}?genre={{ genre|urlencode }}">{{ genre }}</a>{% endfor %}</div>
+        <p class="movie-intro-summary">{{ movie.overview }}</p>
+        <div class="movie-intro-actions">
+          {% if video.media %}<a class="button primary" href="{% url 'watch' movie.id %}"><span aria-hidden="true">▶</span> Смотреть фильм</a>
+          {% elif video %}<a class="button primary" href="{% url 'watch' movie.id %}">Где смотреть</a>
+          {% elif movie.trailer_id %}<a class="button primary" href="#movie-trailer">Трейлер</a>{% endif %}
+          {% include 'partials/save.html' %}<button class="button subtle" type="button" data-share>Поделиться</button>
+        </div>
+        {% if not video %}<p class="movie-availability">Полная версия пока недоступна.</p>{% endif %}
+      </div>
+      {% if movie.trailer_id or movie.poster or movie.backdrop %}
+      <div class="movie-intro-media" id="movie-trailer">
+        {% if movie.trailer_id %}
+          <div class="movie-intro-media-heading"><h2>Трейлер</h2><span>{{ movie.trailer_channel }}</span></div>
+          {% include 'partials/cinema.html' with eager=True %}
+        {% elif movie.backdrop and video.media %}
+          <a class="movie-feature-art" href="{% url 'watch' movie.id %}" aria-label="Смотреть фильм {{ movie.title }}"><img src="{{ movie.backdrop }}" alt="" width="640" height="360" decoding="async"><span aria-hidden="true">▶</span></a>
+        {% else %}<img class="movie-intro-poster" src="{{ movie.poster|default:movie.backdrop }}" alt="Постер фильма {{ movie.title }}" width="500" height="750">{% endif %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>

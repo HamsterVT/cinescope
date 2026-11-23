@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Мои покупки — CineScope{% endblock %}
+{% block page_styles %}<link rel="stylesheet" href="{% static 'billing.css' %}">{% endblock %}
+
+{% block content %}
+<section class="wrap billing-page">
+  <a class="breadcrumb" href="{% url 'profile' %}">В профиль</a>
+  <div class="billing-heading">
+    <h1>Мои покупки</h1>
+    {% if membership.active %}<p><span class="supporter-badge">CineScope Plus</span> действует до {{ membership.until|date:'j E Y' }}.</p>{% endif %}
+  </div>
+  {% if error %}
+    <p role="alert" class="billing-notice error">{{ error }}</p>
+  {% else %}
+    <div class="order-list">
+      {% for item in orders %}
+        <a href="{% url 'billing_order' item.id %}">
+          <span><strong>{{ item.title }}</strong><small>{{ item.created|date:'j E Y, H:i' }}</small></span>
+          <span class="order-list-details">
+            <strong>{{ item.amount|floatformat:"0g" }} ₸</strong>
+            <span class="order-status" data-state="{{ item.state }}">{{ item.status_label }}</span>
+
+          </span>
+        </a>
+      {% empty %}
+        <article class="order-panel">
+          <h2>Покупок пока нет</h2>
+          <p>Поддержите проект и получите значок Plus в своём профиле.</p>
+          <a href="{% url 'subscription' %}" class="button primary">Выбрать Plus</a>
+        </article>
+      {% endfor %}
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}{% load static %}
+{% block title %}Смотреть фильмы — CineScope{% endblock %}
+{% block description %}Полные фильмы в плеере CineScope и официальные ссылки на просмотр.{% endblock %}
+{% block page_styles %}<link rel="stylesheet" href="{% static 'video.css' %}">{% endblock %}
+{% block content %}
+<section class="wrap video-library page-section">
+  <div class="video-heading">
+    <div>
+      <h1>Смотреть фильмы<span class="lime">.</span></h1>
+      <p>Полные версии в плеере CineScope и на официальных платформах.</p>
+    </div>
+    <a href="{% url 'catalog' %}" class="text-link">Весь каталог</a>
+  </div>
+  <div class="video-grid">
+    {% for movie in movies %}
+      <article class="video-tile">
+        <a class="video-tile-art" href="{% url 'watch' movie.id %}" aria-label="Смотреть: {{ movie.title }}">
+          {% if movie.backdrop %}<img src="{{ movie.backdrop }}" alt="" width="640" height="360" decoding="async" {% if not forloop.first %}loading="lazy"{% endif %}>{% endif %}
+          <span class="video-tile-play" aria-hidden="true">{% if movie.video.media %}▶{% else %}{% endif %}</span>
+          {% if movie.runtime %}<span class="video-tile-runtime">{{ movie.runtime }} мин</span>{% endif %}
+        </a>
+        <div class="video-tile-copy">
+          <h2><a href="{% url 'watch' movie.id %}">{{ movie.title }}</a></h2>
+          <p>{% if movie.year %}{{ movie.year }} · {% endif %}{{ movie.video.source_name }}</p>
+          <a class="video-detail-link" href="{% url 'detail' movie.id %}">О фильме</a>
+        </div>
+      </article>
+    {% empty %}
+      <div class="empty-state"><h2>Фильмы пока недоступны</h2><a class="button subtle" href="{% url 'trailers' %}">Открыть трейлеры</a></div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

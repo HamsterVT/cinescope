@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Заказ Plus — CineScope{% endblock %}
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'billing.css' %}">
+<script src="{% static 'billing.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+<section class="wrap billing-page billing-order">
+  <a class="breadcrumb" href="{% url 'billing_history' %}">История покупок</a>
+  <article class="order-panel" {% if order.can_refresh %}data-order-state="{{ order.state }}"{% if order.creation_delayed and order.state == 'creating' %} data-stale-order{% endif %}{% endif %}>
+    <div class="order-topline">
+      <span class="eyebrow muted">CineScope Plus · {{ plan.period }}</span>
+      <span class="order-status" data-state="{{ order.state }}">{{ order.status_label }}</span>
+    </div>
+
+    {% if order.state == 'paid' %}
+      <h1>Спасибо за поддержку</h1>
+      <p>Plus подключён до {{ order.until|date:'j E Y' }}. Значок доступен в вашем профиле.</p>
+    {% elif order.state == 'review' %}
+      <h1>Платёж требует проверки</h1>
+      <p>BTCPay пока не подтвердил обычное завершение платежа. Если вы уже отправили BTC, сохраните идентификатор перевода и проверьте статус позже.</p>
+    {% elif order.state == 'processing' %}
+      <h1>Платёж найден</h1>
+      <p>Ждём подтверждения сети Bitcoin. Срок зависит от загруженности сети и комиссии вашего кошелька. Plus появится автоматически после подтверждения.</p>
+    {% elif order.state == 'partial' %}
+      <h1>Получена часть платежа</h1>
+      {% if order.can_open_payment %}
+        <p>Откройте счёт, чтобы увидеть оставшуюся сумму BTC. Сверьте её перед переводом.</p>
+      {% else %}
+        <p>Срок счёта истёк. Если вы отправили перевод, сохраните его идентификатор и периодически проверяйте этот заказ.</p>
+      {% endif %}
+    {% elif order.state == 'expired' %}
+      <h1>Срок счёта истёк</h1>
+      <p>Если перевод ещё не отправлен, создайте новый счёт с актуальным курсом. Если BTC уже отправлены, проверьте этот заказ позже перед повторной оплатой.</p>
+    {% elif order.state == 'failed' %}
+      <h1>BTCPay не создал счёт</h1>
+      <p>Заказ сохранился в истории. Можно вернуться к тарифу и попробовать оформить его снова.</p>
+    {% elif order.state == 'creating' %}
+      {% if order.creation_delayed %}
+        <h1>Счёт пока не найден</h1>
+        <p>Проверьте, успел ли BTCPay создать счёт. Если QR-код так и не появился и вы ничего не отправляли, можно оформить новый заказ.</p>
+      {% else %}
+        <h1>Готовим счёт</h1>
+        <p>Обновим статус, как только BTCPay ответит. Если вы уже открывали QR-код, проверьте этот заказ перед повторной оплатой.</p>
+      {% endif %}
+    {% else %}
+      <h1>Счёт готов к оплате</h1>
+      <p>В BTCPay доступны точная сумма BTC, адрес и QR-код. После перевода вернитесь к заказу, чтобы увидеть статус.</p>
+    {% endif %}
+
+    <dl class="checkout-facts">
+      <div><dt>Тариф</dt><dd>{{ plan.title }}</dd></div>
+      <div><dt>Стоимость</dt><dd>{{ plan.display }} ₸</dd></div>
+      <div><dt>Способ оплаты</dt><dd>Bitcoin <span class="muted">· BTC</span></dd></div>
+      <div><dt>Номер заказа</dt><dd class="order-number">{{ order.id }}</dd></div>
+    </dl>
+
+    {% if error %}<p class="billing-notice error" role="alert">{{ error }}</p>{% endif %}
+    {% if order.can_refresh %}
+      <form method="post" class="order-actions">
+        {% csrf_token %}
+        {% if order.can_open_payment %}<button name="action" value="pay" class="button primary">Открыть счёт BTCPay</button>{% endif %}
+        <button name="action" value="refresh" class="button subtle">{% if order.state == 'creating' %}Проверить наличие счёта{% else %}Проверить оплату{% endif %}</button>
+        {% if order.state == 'expired' or order.state == 'creating' and order.creation_delayed %}
+          <a class="button subtle" href="{% url 'billing_checkout' %}?plan={{ order.plan }}">Оформить новый заказ</a>
+        {% endif %}
+      </form>
+    {% elif order.state == 'paid' %}
+      <a class="button primary" href="{% url 'profile' %}">Открыть профиль</a>
+    {% else %}
+      <a class="button primary" href="{% url 'billing_checkout' %}?plan={{ order.plan }}">Вернуться к оформлению</a>
+    {% endif %}
+  </article>
+</section>
+{% endblock %}

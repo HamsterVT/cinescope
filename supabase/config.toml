@@ -1,0 +1,25 @@
+project_id = "cinescope"
+[auth]
+site_url = "https://cinescope-beta-five.vercel.app"
+additional_redirect_urls = ["https://cinescope-beta-five.vercel.app/account/callback/"]
+minimum_password_length = 12
+password_requirements = "lower_upper_letters_digits_symbols"
+[auth.rate_limit]
+email_sent = 30
+[auth.email]
+enable_confirmations = true
+secure_password_change = true
+[auth.email.smtp]
+enabled = true
+host = "smtp.resend.com"
+port = 465
+user = "resend"
+pass = "env(CINESCOPE_SMTP_PASSWORD)"
+admin_email = "noreply@genium.kz"
+sender_name = "CineScope"
+[auth.email.template.confirmation]
+subject = "Подтвердите email — CineScope"
+content_path = "./supabase/templates/confirmation.html"
+[auth.email.template.recovery]
+subject = "Восстановление доступа — CineScope"
+content_path = "./supabase/templates/recovery.html"

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}{% if query %}Поиск: {{ query }}{% else %}Каталог фильмов{% endif %} — CineScope{% endblock %}
+{% block content %}
+<section class="wrap page-section">
+  <a class="breadcrumb" href="/">Главная <span>/ Каталог</span></a>
+  <div class="page-heading">
+    <h1>{% if collection_info %}{{ collection_info.title }}{% elif query %}Поиск по каталогу{% elif ranking %}Высокий рейтинг{% elif media_type == "tv" %}Сериалы{% else %}Каталог фильмов и сериалов{% endif %}</h1>
+    {% if collection_info %}<p>{{ collection_info.subtitle }}</p>{% endif %}
+  </div>
+  <form class="catalog-form" action="{{ request.path }}" id="catalog-form" role="search">
+    <div class="big-search"><span aria-hidden="true">⌕</span><input id="catalog-search" type="search" name="q" value="{{ query }}" placeholder="Название фильма, режиссёр или актёр" aria-label="Название фильма, режиссёр или актёр" maxlength="160"><button class="button primary" type="submit">Найти </button></div>
+    <details class="filter-panel" {% if active_filters or not ranking and sort != 'curated' %}open{% endif %}>
+      <summary>Фильтры и сортировка{% if active_filters %} <span>{{ active_filters|length }} выбрано</span>{% endif %}</summary>
+      <div class="filters">
+        {% if active != 'series' %}<label>Тип<select name="type"><option value="">Фильмы и сериалы</option><option value="movie" {% if media_type == 'movie' %}selected{% endif %}>Фильмы</option><option value="tv" {% if media_type == 'tv' %}selected{% endif %}>Сериалы</option></select></label>{% endif %}
+        <label>Жанр<select name="genre"><option value="">Все жанры</option>{% for g in genres %}<option value="{{ g }}" {% if genre == g %}selected{% endif %}>{{ g }}</option>{% endfor %}{% if genre and genre not in genres %}<option value="{{ genre }}" selected>{{ genre }}</option>{% endif %}</select></label>
+        <label>Год<select name="year"><option value="">Все годы</option>{% for y in years %}<option value="{{ y }}" {% if year == y %}selected{% endif %}>{{ y }}</option>{% endfor %}{% if year and year not in years %}<option value="{{ year }}" selected>{{ year }}</option>{% endif %}</select></label>
+        <label>Страна<select name="country"><option value="">Все страны</option>{% for c in countries %}<option value="{{ c }}" {% if country == c %}selected{% endif %}>{{ c }}</option>{% endfor %}{% if country and country not in countries %}<option value="{{ country }}" selected>{{ country }}</option>{% endif %}</select></label>
+        <label>Рейтинг<select name="rating"><option value="">Любой</option><option value="7" {% if minimum == '7' %}selected{% endif %}>От 7</option><option value="8" {% if minimum == '8' %}selected{% endif %}>От 8</option><option value="9" {% if minimum == '9' %}selected{% endif %}>От 9</option></select></label>
+        {% if not ranking %}<label>Сортировка<select name="sort"><option value="curated" {% if sort == 'curated' %}selected{% endif %}>Выбор редакции</option><option value="rating" {% if sort == 'rating' %}selected{% endif %}>Высокий рейтинг</option><option value="year" {% if sort == 'year' %}selected{% endif %}>Сначала новые</option><option value="title" {% if sort == 'title' %}selected{% endif %}>По названию</option></select></label>{% endif %}
+        {% if collection %}<input type="hidden" name="collection" value="{{ collection }}">{% endif %}
+        <label class="playable-filter"><input type="checkbox" name="watch" value="1" {% if playable %}checked{% endif %}> Доступно для просмотра</label><div class="filter-actions"><button class="button subtle" type="submit">Применить фильтры</button><a class="reset-link" href="{{ reset_url }}">Сбросить фильтры</a></div>
+      </div>
+    </details>
+  </form>
+  {% if source_error %}<p class="notice" role="status">Источник временно недоступен. Показываем нашу редакционную подборку.</p>{% endif %}
+  {% if active_filters %}
+  <nav class="active-filters" aria-label="Применённые фильтры">{% for item in active_filters %}<a class="chip" href="{{ item.url }}" aria-label="Убрать фильтр {{ item.label }}">{{ item.label }} <span aria-hidden="true">×</span></a>{% endfor %}</nav>
+  {% endif %}
+  <div class="results-heading"><h2>{% if query %}Результаты поиска{% elif playable %}Доступно для просмотра{% elif media_type == "tv" %}Сериалы{% else %}Фильмы и сериалы{% endif %} <span>{{ total }}</span></h2></div>
+  <div class="movie-grid catalog-grid">
+    {% for movie in movies %}{% include 'partials/card.html' %}{% empty %}
+      <div class="empty-state"><h2>Ничего не найдено</h2><p>Проверьте название или снимите часть фильтров.</p>
+        {% if active_filters %}<a class="button subtle" href="{{ reset_url }}">Сбросить фильтры</a>{% else %}<a class="button subtle" href="{% url 'catalog' %}">Открыть весь каталог</a>{% endif %}
+      </div>
+    {% endfor %}
+  </div>
+  {% if page.paginator.num_pages > 1 %}<nav class="pagination" aria-label="Страницы каталога">{% if page.has_previous %}<a class="chip" href="?{{ pagination_query }}&page={{ page.previous_page_number }}">Назад</a>{% endif %}<span>{{ page.number }} / {{ page.paginator.num_pages }}</span>{% if page.has_next %}<a class="chip" href="?{{ pagination_query }}&page={{ page.next_page_number }}">Дальше</a>{% endif %}</nav>{% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}{% load static %}
+{% block title %}CineScope — кино, которое станет вашим{% endblock %}
+{% block body_class %}landing-page{% endblock %}
+{% block page_styles %}<link rel="stylesheet" href="{% static 'guest.css' %}">{% endblock %}
+{% block content %}
+<section class="guest-hero feature-hero" aria-labelledby="hero-title">
+  <img class="feature-hero-art" src="{{ hero_movie.backdrop }}" alt="" fetchpriority="high" width="1280" height="720">
+  <div class="feature-hero-shade"></div>
+  <div class="wrap">
+    <div class="feature-hero-copy">
+      <p class="feature-hero-meta"><span>{{ hero_movie.year }}</span><span>{{ hero_movie.genres.0 }}</span><span>{{ hero_movie.genres.1 }}</span></p>
+      <h1 id="hero-title">Человек-паук:<br><em>Новый день</em></h1>
+      <p class="feature-hero-overview">{{ hero_movie.overview }}</p>
+      <div class="feature-hero-actions">
+        {% if hero_video.media %}
+          <a class="button primary" href="{% url 'watch' hero_movie.id %}"><span aria-hidden="true">▶</span> Смотреть фильм</a>
+        {% else %}
+          <a class="button primary" href="{% url 'watch' hero_movie.id %}">Где смотреть</a>
+        {% endif %}
+        <a class="button subtle" href="https://www.youtube.com/watch?v={{ hero_movie.trailer_id }}" data-trailer="{{ hero_movie.trailer_id }}" data-trailer-name="{{ hero_movie.title }}" data-trailer-channel="{{ hero_movie.trailer_channel }}" aria-haspopup="dialog">Трейлер</a>
+        <a class="text-link" href="{% url 'detail' hero_movie.id %}">О фильме</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="discovery section-wrap" aria-labelledby="discovery-title">
+  <div class="section-heading"><h2 id="discovery-title">Выбор редакции</h2><a href="{% url 'catalog' %}">Весь каталог</a></div>
+  <div class="film-row">
+    {% for movie in featured %}<a class="film" href="{% url 'detail' movie.id %}"><div class="poster"><img src="{{ movie.poster }}" alt="" width="300" height="450" loading="lazy" decoding="async">{% if movie.rating %}<span class="rating">{{ movie.rating }}</span>{% endif %}</div><h3>{{ movie.title }}</h3><p>{{ movie.year }} · {{ movie.genres.0 }}</p></a>{% endfor %}
+  </div>
+</section>
+
+{% if open_movies %}
+<section class="open-film-section section-wrap" aria-labelledby="open-film-title">
+  <div class="section-heading"><div><h2 id="open-film-title">Смотреть целиком</h2><p class="section-description">Открытые фильмы Blender Studio</p></div><a href="{% url 'video_library' %}">Раздел «Смотреть»</a></div>
+  <div class="open-film-row">
+    {% for movie in open_movies %}
+    <a class="open-film" href="{% url 'watch' movie.id %}">
+      <div><img src="{{ movie.backdrop }}" alt="" width="640" height="360" loading="lazy" decoding="async"><span aria-hidden="true">▶</span></div>
+      <h3>{{ movie.title }}</h3><p>{{ movie.year }} · {{ movie.runtime }} мин</p>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section class="plans-section section-wrap" id="plans" aria-labelledby="plans-title">
+  <div class="section-heading"><div><h2 id="plans-title">CineScope Plus</h2><p class="section-description">Поддержите проект и получите значок в профиле.</p></div></div>
+  {% include 'partials/pricing.html' %}
+  <p class="plans-note">Разовый платёж в Bitcoin. Каталог и открытые фильмы доступны бесплатно.</p>
+</section>
+{% endblock %}

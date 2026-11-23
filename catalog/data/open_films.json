@@ -1,0 +1,50 @@
+[
+  {
+    "id": "big-buck-bunny",
+    "title": "Большой Бак Банни",
+    "original_title": "Big Buck Bunny",
+    "year": 2008,
+    "runtime": 10,
+    "director": "Саша Гёдегебюре",
+    "country": "Нидерланды",
+    "genres": ["Анимация", "Комедия"],
+    "overview": "Добродушный кролик выходит на прогулку и встречает троицу лесных хулиганов. Когда их проделки заходят слишком далеко, Банни придумывает ответ по-своему.",
+    "source_name": "Blender Foundation · Project Peach",
+    "source_url": "https://studio.blender.org/films/big-buck-bunny/",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/",
+    "media_url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c0/Big_Buck_Bunny_4K.webm/Big_Buck_Bunny_4K.webm.480p.vp9.webm",
+    "audio_label": "Без диалогов"
+  },
+  {
+    "id": "sintel",
+    "title": "Синтел",
+    "original_title": "Sintel",
+    "year": 2010,
+    "runtime": 15,
+    "director": "Колин Леви",
+    "country": "Нидерланды",
+    "genres": ["Анимация", "Фэнтези", "Приключения"],
+    "overview": "Путница подбирает раненого дракончика. Когда его уносит взрослый дракон, Синтел отправляется на поиски через горы и чужие земли.",
+    "source_name": "Blender Foundation · Project Durian",
+    "source_url": "https://studio.blender.org/films/sintel/",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/",
+    "media_url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/f/f1/Sintel_movie_4K.webm/Sintel_movie_4K.webm.480p.vp9.webm",
+    "audio_label": "Оригинальная дорожка · английский"
+  },
+  {
+    "id": "tears-of-steel",
+    "title": "Слёзы стали",
+    "original_title": "Tears of Steel",
+    "year": 2012,
+    "runtime": 12,
+    "director": "Иэн Хьюберт",
+    "country": "Нидерланды",
+    "genres": ["Фантастика", "Короткометражный"],
+    "overview": "В будущем Амстердаме команда учёных пытается воспроизвести давний разговор. От того, изменится ли его финал, зависит судьба города.",
+    "source_name": "Blender Foundation · Project Mango",
+    "source_url": "https://studio.blender.org/films/tears-of-steel/",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/",
+    "media_url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/10/Tears_of_Steel_in_4k_-_Official_Blender_Foundation_release.webm/Tears_of_Steel_in_4k_-_Official_Blender_Foundation_release.webm.480p.vp9.webm",
+    "audio_label": "Оригинальная дорожка · английский"
+  }
+]

@@ -1,0 +1,75 @@
+{% extends 'base.html' %}{% load static %}
+{% block title %}Смотреть {{ movie.title }} — CineScope{% endblock %}
+{% block page_styles %}<link rel="stylesheet" href="{% static 'video.css' %}">{% if cloud_user and video.media %}<script src="{% static 'watch.js' %}" defer></script>{% endif %}{% endblock %}
+{% block content %}
+<section class="wrap page-section watch-page watch-refined">
+  <nav class="watch-breadcrumbs" aria-label="Просмотр">
+    <a class="breadcrumb" href="{% url 'video_library' %}">Все фильмы</a>
+    <a class="breadcrumb" href="{% url 'detail' movie.id %}">О фильме</a>
+    {% if cloud_user %}<a class="breadcrumb" href="{% url 'profile' %}?tab=history">Мои просмотры</a>{% endif %}
+  </nav>
+  <div class="video-heading">
+    <div>
+      <h1>{{ movie.title }}</h1>
+      <p>{{ movie.year }}{% if movie.genres.0 %} · {{ movie.genres.0 }}{% endif %}{% if movie.runtime %} · {{ movie.runtime }} мин{% endif %}{% if video.audio_label %} · {{ video.audio_label }}{% endif %}</p>
+    </div>
+    {% include 'partials/save.html' %}
+  </div>
+
+  {% if video and not cloud_user %}
+    <div class="watch-locked">
+      {% if movie.backdrop %}<img src="{{ movie.backdrop }}" alt="" width="1280" height="720" fetchpriority="high">{% endif %}
+      <div class="watch-locked-copy">
+        <span class="watch-lock" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 1 1 8 0v3m-4 4v3"/></svg></span>
+        <h2>Войдите для просмотра</h2>
+        <p>После входа вы вернётесь к фильму. CineScope запомнит, где вы остановились.</p>
+        <a class="button primary" href="?signin=1">Войти и продолжить</a>
+      </div>
+    </div>
+  {% elif video.media %}
+    <figure class="feature-film">
+      <div class="movie-player" data-movie-player="{{ movie.id }}" data-progress-url="{% url 'watch_progress' movie.id %}" data-resume-seconds="{{ resume_seconds }}" {% if auto_resume %}data-auto-resume{% endif %}>
+        <video controls playsinline preload="none" {% if movie.backdrop %}poster="{{ movie.backdrop }}"{% endif %} aria-label="Плеер: {{ movie.title }}">
+          <source src="{{ video.media.url }}" type="{{ video.media.mime }}">
+          <a href="{{ video.source_url }}" target="_blank" rel="noopener noreferrer">Страница источника</a>
+        </video>
+        <div class="movie-player-overlay" data-player-overlay hidden>
+          {% if resume_seconds %}<button class="button primary" type="button" data-resume-film><span aria-hidden="true">▶</span> Продолжить с {{ resume_label }}</button>{% endif %}
+          <button class="button {% if resume_seconds %}subtle{% else %}primary{% endif %}" type="button" data-play-film>{% if resume_seconds %}Смотреть с начала{% else %}<span aria-hidden="true">▶</span> Смотреть фильм{% endif %}</button>
+        </div>
+      </div>
+      <div class="watch-player-bar">
+        <div class="watch-seek" data-seek-controls hidden>
+          <button class="button subtle" type="button" data-seek="-10">Назад 10 с</button>
+          <button class="button subtle" type="button" data-seek="10">Вперёд 10 с</button>
+        </div>
+        <p class="watch-save-status" data-save-status role="status">Позиция сохраняется в «Моих просмотрах».</p>
+      </div>
+      <figcaption class="film-credits">
+        <span>{{ video.source_name }}{% if video.license_url %} · <a href="{{ video.license_url }}" rel="noopener noreferrer" target="_blank">CC BY 3.0</a> · Веб-версия Wikimedia Commons{% endif %}</span>
+        <a href="{{ video.source_url }}" target="_blank" rel="noopener noreferrer">{% if video.demo %}О фильме на Sony Pictures{% else %}Страница источника{% endif %}</a>
+      </figcaption>
+      <div class="film-playback-error notice" data-film-error role="status" hidden>
+        <p>Видео не загрузилось. Можно повторить попытку{% if video.demo %} или открыть официальную страницу фильма{% endif %}.</p>
+        <button class="button subtle" type="button" data-retry-film>Повторить</button>
+        <a class="text-link" href="{{ video.source_url }}" target="_blank" rel="noopener noreferrer">Открыть источник</a>
+      </div>
+    </figure>
+  {% elif video %}
+    <div class="watch-locked watch-external">
+      {% if movie.backdrop %}<img src="{{ movie.backdrop }}" alt="" width="1280" height="720">{% endif %}
+      <div class="watch-locked-copy">
+        <h2>Смотреть через {{ video.source_name }}</h2>
+        <p>Откройте официальную страницу. Доступность зависит от региона.</p>
+        <a class="button primary" href="{{ video.source_url }}" target="_blank" rel="noopener noreferrer">Открыть {{ video.source_name }}</a>
+      </div>
+    </div>
+  {% else %}
+    <div class="video-unavailable">
+      <h2>Полной версии пока нет</h2>
+      <p>{% if movie.trailer_id %}Трейлер доступен в карточке фильма.{% else %}Другие фильмы доступны в разделе «Смотреть».{% endif %}</p>
+      <a class="button primary" href="{% url 'detail' movie.id %}">Открыть карточку фильма</a>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}
