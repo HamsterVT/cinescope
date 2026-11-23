@@ -33,6 +33,8 @@ class PlaybackTests(SimpleTestCase):
         self.assertContains(watch, '<video controls playsinline preload="none"')
         self.assertContains(watch, 'video/webm')
         self.assertContains(watch, 'CC BY 3.0')
+        self.assertContains(watch, '/watch/big-buck-bunny/?resume=1')
+        self.assertContains(watch, 'Открыть видео отдельно')
         self.assertIn("media-src 'self' https://upload.wikimedia.org", watch['Content-Security-Policy'])
         self.assertNotIn('vidsrc', watch['Content-Security-Policy'])
         self.assertContains(self.client.get('/watch/'), 'Синтел')

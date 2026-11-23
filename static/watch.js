@@ -5,6 +5,8 @@
     const video = player.querySelector('video');
     const overlay = player.querySelector('[data-player-overlay]');
     const error = document.querySelector('[data-film-error]');
+    const errorMessage = error.querySelector('[data-film-error-message]');
+    const defaultError = errorMessage.textContent;
     const status = document.querySelector('[data-save-status]');
     const seekControls = document.querySelector('[data-seek-controls]');
     const csrf = document.querySelector('#csrf-form input')?.value;
@@ -49,29 +51,39 @@
         }
     }
 
-    function play(position, reload = false) {
+    function showPlaybackError() {
+        const code = video.error?.code;
+        if (code === 1) return;
+        errorMessage.textContent = {
+            2: 'Соединение с видеохостом прервалось. Обновите страницу или откройте видео отдельно.',
+            3: 'Браузер не смог воспроизвести этот файл. Попробуйте открыть видео отдельно.',
+            4: 'Браузеру не удалось открыть файл с видеохоста. Обновите страницу или откройте видео отдельно.',
+        }[code] || defaultError;
+        overlay.hidden = true;
+        error.hidden = false;
+    }
+
+    function play(position) {
         resumeAt = position;
         error.hidden = true;
         overlay.hidden = true;
-        if (reload) video.load();
         if (video.readyState >= 1) {
-            if (!position && !reload) video.currentTime = 0;
+            if (!position) video.currentTime = 0;
             restore();
         }
         video.focus({preventScroll: true});
         video.play().catch(reason => {
             if (reason.name === 'NotAllowedError') overlay.hidden = false;
-            else if (video.error) error.hidden = false;
+            else if (reason.name !== 'AbortError') showPlaybackError();
         });
     }
 
     player.querySelector('[data-play-film]').addEventListener('click', () => play(0));
     player.querySelector('[data-resume-film]')?.addEventListener('click', () => play(saved));
-    error.querySelector('[data-retry-film]').addEventListener('click', () => play(video.currentTime || saved, true));
     video.addEventListener('loadedmetadata', restore);
     video.addEventListener('playing', () => { watched = true; seekControls.hidden = false; });
-    video.addEventListener('error', () => { overlay.hidden = true; error.hidden = false; });
-    video.querySelector('source').addEventListener('error', () => { overlay.hidden = true; error.hidden = false; });
+    video.addEventListener('error', showPlaybackError);
+    video.querySelector('source').addEventListener('error', showPlaybackError);
     video.addEventListener('timeupdate', () => { if (Date.now() - lastAttempt >= 12000) savePosition(); });
     video.addEventListener('pause', savePosition);
     video.addEventListener('ended', savePosition);

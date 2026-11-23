@@ -50,9 +50,11 @@
         <a href="{{ video.source_url }}" target="_blank" rel="noopener noreferrer">{% if video.demo %}О фильме на Sony Pictures{% else %}Страница источника{% endif %}</a>
       </figcaption>
       <div class="film-playback-error notice" data-film-error role="status" hidden>
-        <p>Видео не загрузилось. Можно повторить попытку{% if video.demo %} или открыть официальную страницу фильма{% endif %}.</p>
-        <button class="button subtle" type="button" data-retry-film>Повторить</button>
-        <a class="text-link" href="{{ video.source_url }}" target="_blank" rel="noopener noreferrer">Открыть источник</a>
+        <p data-film-error-message>Видео не загрузилось. Обновите страницу, чтобы получить актуальную ссылку.</p>
+        <div class="film-error-actions">
+          <a class="button subtle" href="{% url 'watch' movie.id %}?resume=1">Обновить страницу</a>
+          <a class="text-link" href="{{ video.media.url }}" target="_blank" rel="noopener noreferrer">Открыть видео отдельно</a>
+        </div>
       </div>
     </figure>
   {% elif video %}
