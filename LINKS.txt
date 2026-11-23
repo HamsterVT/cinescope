@@ -5,6 +5,6 @@ https://cinescope-beta-five.vercel.app/
 
 Исходники на GitHub
 https://github.com/HamsterVT/cinescope
-Репозиторий приватный. Для открытия нужен доступ от владельца.
+Репозиторий публичный. Ссылка открывается без входа в GitHub.
 
 Инструкция локального запуска находится в README.md.

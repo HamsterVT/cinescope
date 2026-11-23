@@ -3,7 +3,7 @@
 Русскоязычный каталог фильмов и сериалов на Django 5.2. В проекте есть поиск и фильтры, карточки и трейлеры, профиль с облачной библиотекой, плеер с продолжением просмотра и CineScope Plus с оплатой через BTCPay.
 
 - [Открыть сайт на Vercel](https://cinescope-beta-five.vercel.app/)
-- [Исходный код на GitHub](https://github.com/HamsterVT/cinescope) (приватный репозиторий, требуется доступ)
+- [Исходный код на GitHub](https://github.com/HamsterVT/cinescope)
 - [Раздел «Смотреть»](https://cinescope-beta-five.vercel.app/watch/)
 
 ## Быстрый запуск
